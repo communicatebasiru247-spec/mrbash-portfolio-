@@ -825,5 +825,52 @@
     const current = phrases[phraseIndex];
 
     if (!deleting) {
-      typingText.textContent =
+      typingText.textContent = current.slice(0, ++letterIndex);
+
+      if (letterIndex === current.length) {
+        deleting = true;
+        window.setTimeout(typeEffect, 1400);
+        return;
+      }
+    } else {
+      typingText.textContent = current.slice(0, --letterIndex);
+
+      if (letterIndex === 0) {
+        deleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+      }
+    }
+
+    window.setTimeout(typeEffect, deleting ? 55 : 85);
+  }
+
+  // Start the typing effect
+  typeEffect();
+
+  // Reveal sections as they enter the viewport
+  const revealElements = document.querySelectorAll(".reveal");
+
+  if ("IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12
+    });
+
+    revealElements.forEach(element => revealObserver.observe(element));
+  } else {
+    revealElements.forEach(element => element.classList.add("visible"));
+  }
+
+  // Keep the footer year current
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
         
